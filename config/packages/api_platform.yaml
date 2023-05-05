@@ -6,3 +6,6 @@ api_platform:
     swagger:
         versions: [3]
     metadata_backward_compatibility_layer: false
+    # collection:
+    #     pagination:
+    #         items_per_page: 10 #te permet d'avoir en generale 10 ressource in 1 page by get on a table (global = bydefault), tu peux la suprimer si pas bs

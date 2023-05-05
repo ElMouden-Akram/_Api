@@ -2,6 +2,11 @@
 
 namespace App\Entity;
 
+// use ApiPlatform\Core\Annotation\ApiFilter;
+use ApiPlatform\Metadata\ApiFilter;
+use ApiPlatform\Core\Bridge\Doctrine\MongoDbOdm\Filter\BooleanFilter;
+// use ApiPlatform\Core\Bridge\Doctrine\MongoDbOdm\Filter\SearchFilter;
+use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
 use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\Put;
 use ApiPlatform\Metadata\Post;
@@ -14,6 +19,7 @@ use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\GetCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\Common\Collections\ArrayCollection;
+use phpDocumentor\Reflection\Types\Boolean;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints\Length;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -25,6 +31,7 @@ use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 // #[ORM\Table(name: '`user`')] doctrine sauvegarde par defaut dans la table du nom de la classe sinon il faut la specifier grace a cette ligne
 #[ApiResource(
+    
     // security: "is_granted('ROLE_ADMIN')"    ,
     // normalizationContext: ['groups' => ['user:read']],
     operations:[
@@ -42,7 +49,7 @@ use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
                 normalizationContext:['groups'=>['user:read']],
                 // security: "is_granted('ROLE_ETUDIANT')"
             ),
-        // new GetCollection(),
+        new GetCollection(),
         new Post(
             denormalizationContext:['groups'=>['user:read','user:write']],
             normalizationContext:['groups'=>['user:read','user:write']]
@@ -50,8 +57,15 @@ use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
         // new Put(),
         // new Delete(),
         // new Patch(),
+    ],
+    paginationItemsPerPage: 5,
+
+    ),
+     ApiFilter(
+        SearchFilter::class,
+        properties:['FirstName'=>'partial'], //🎥(highly recommended):https://youtu.be/ZRBRtA_2NAo?t=4273 
+    )
     ]
-)]
 
 class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
