@@ -40,7 +40,7 @@ use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
                 controller: MeController::class,
                 read:false,
                 normalizationContext:['groups'=>['user:read']],
-                security: "is_granted('ROLE_ETUDIANT')"
+                // security: "is_granted('ROLE_ETUDIANT')"
             ),
         // new GetCollection(),
         new Post(
