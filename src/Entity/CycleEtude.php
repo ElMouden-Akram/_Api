@@ -2,14 +2,34 @@
 
 namespace App\Entity;
 
-use ApiPlatform\Metadata\ApiResource;
-use App\Repository\CycleEtudeRepository;
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
+use ApiPlatform\Metadata\Post;
 use Doctrine\ORM\Mapping as ORM;
+use ApiPlatform\Metadata\ApiResource;
+use App\Controller\cycleEtudes\AddEtudiant;
+use App\Repository\CycleEtudeRepository;
+use Doctrine\Common\Collections\Collection;
+use Doctrine\Common\Collections\ArrayCollection;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: CycleEtudeRepository::class)]
-#[ApiResource]
+#[ApiResource(
+    operations:[
+        new Post(
+            denormalizationContext:['groups'=>['CycleEtude:read','CycleEtude:write']],//response
+            normalizationContext:['groups'=>['CycleEtude:read','CycleEtude:write']]//request  / #[Groups(['CycleEtude:write'])]
+        ),
+        new Post(),
+        new Post(
+            name: "addEtudiant",
+            uriTemplate: '/cycle_etudes/{id}/addEtudiant',
+            controller: AddEtudiant::class ,
+            // write:false,
+            // read: false,
+            denormalizationContext:['groups'=>'addEtudiant'],//request
+            normalizationContext:['groups'=>'addEtudiant'],//response
+        ),
+    ],
+)]
 class CycleEtude
 {
     #[ORM\Id]
@@ -18,19 +38,24 @@ class CycleEtude
     private ?int $id = null;
 
     #[ORM\Column(length: 50)]
+    #[Groups(['CycleEtude:write'])]
     private ?string $titre = null;
 
     #[ORM\Column]
+    #[Groups(['CycleEtude:write'])]
     private ?bool $isMainStudy = null;
 
     #[ORM\Column(length: 50)]
+    #[Groups(['CycleEtude:write'])]
     private ?string $discipline = null;
 
-    #[ORM\Column(length: 3)]
+    #[ORM\Column(length: 50)]
+    #[Groups(['CycleEtude:write'])]
     private ?string $diplome = null;
 
     #[ORM\ManyToOne(inversedBy: 'cycleEtudes')]
     #[ORM\JoinColumn(nullable: false)]
+    #[Groups(['CycleEtude:write'])]
     private ?Etablissement $appartenir = null;
 
     #[ORM\ManyToMany(targetEntity: User::class, mappedBy: 'poursuivre')]

@@ -46,7 +46,7 @@ use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
                 paginationEnabled:false, 
                 uriTemplate: '/me', 
                 controller: MeController::class,
-                read:false,
+                read:false, //https://api-platform.com/docs/core/controllers/#retrieving-the-entity +🎥: https://youtu.be/BhXFvTqByeQ?t=377
                 normalizationContext:['groups'=>['user:read']],
                 // security: "is_granted('ROLE_ETUDIANT')"
             ),
