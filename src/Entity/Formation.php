@@ -2,34 +2,34 @@
 
 namespace App\Entity;
 
-use App\Repository\OffreStageRepository;
+use App\Repository\FormationRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
-#[ORM\Entity(repositoryClass: OffreStageRepository::class)]
-class OffreStage
+#[ORM\Entity(repositoryClass: FormationRepository::class)]
+class Formation
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\Column(length: 30)]
+    #[ORM\Column(length: 50)]
     private ?string $titre = null;
-
-    #[ORM\ManyToOne(inversedBy: 'offreStages')]
-    #[ORM\JoinColumn(nullable: false)]
-    private ?User $ajouterPar = null;
 
     #[ORM\Column(type: Types::TEXT)]
     private ?string $description = null;
 
+    #[ORM\ManyToOne(inversedBy: 'formations')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?User $ajouterPar = null;
+
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
     private ?\DateTimeInterface $date_ajout = null;
 
-    #[ORM\ManyToOne(inversedBy: 'offreStages')]
+    #[ORM\ManyToOne(inversedBy: 'formations')]
     #[ORM\JoinColumn(nullable: false)]
-    private ?Emploi $appartenir = null;
+    private ?CycleEtude $apartenir = null;
 
     public function getId(): ?int
     {
@@ -48,18 +48,6 @@ class OffreStage
         return $this;
     }
 
-    public function getAjouterPar(): ?User
-    {
-        return $this->ajouterPar;
-    }
-
-    public function setAjouterPar(?User $ajouterPar): self
-    {
-        $this->ajouterPar = $ajouterPar;
-
-        return $this;
-    }
-
     public function getDescription(): ?string
     {
         return $this->description;
@@ -68,6 +56,18 @@ class OffreStage
     public function setDescription(string $description): self
     {
         $this->description = $description;
+
+        return $this;
+    }
+
+    public function getAjouterPar(): ?User
+    {
+        return $this->ajouterPar;
+    }
+
+    public function setAjouterPar(?User $ajouterPar): self
+    {
+        $this->ajouterPar = $ajouterPar;
 
         return $this;
     }
@@ -84,14 +84,14 @@ class OffreStage
         return $this;
     }
 
-    public function getAppartenir(): ?Emploi
+    public function getApartenir(): ?CycleEtude
     {
-        return $this->appartenir;
+        return $this->apartenir;
     }
 
-    public function setAppartenir(?Emploi $appartenir): self
+    public function setApartenir(?CycleEtude $apartenir): self
     {
-        $this->appartenir = $appartenir;
+        $this->apartenir = $apartenir;
 
         return $this;
     }

@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\EntrepriseRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -28,6 +30,18 @@ class Entreprise
 
     #[ORM\Column(type: Types::TEXT)]
     private ?string $description = null;
+
+    #[ORM\ManyToMany(targetEntity: SecteurActivite::class, inversedBy: 'entreprises')]
+    private Collection $secteurActivite;
+
+    #[ORM\OneToMany(mappedBy: 'appartenir', targetEntity: Emploi::class, orphanRemoval: true)]
+    private Collection $emplois;
+
+    public function __construct()
+    {
+        $this->secteurActivite = new ArrayCollection();
+        $this->emplois = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -90,6 +104,60 @@ class Entreprise
     public function setDescription(string $description): self
     {
         $this->description = $description;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, SecteurActivite>
+     */
+    public function getSecteurActivite(): Collection
+    {
+        return $this->secteurActivite;
+    }
+
+    public function addSecteurActivite(SecteurActivite $secteurActivite): self
+    {
+        if (!$this->secteurActivite->contains($secteurActivite)) {
+            $this->secteurActivite->add($secteurActivite);
+        }
+
+        return $this;
+    }
+
+    public function removeSecteurActivite(SecteurActivite $secteurActivite): self
+    {
+        $this->secteurActivite->removeElement($secteurActivite);
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Emploi>
+     */
+    public function getEmplois(): Collection
+    {
+        return $this->emplois;
+    }
+
+    public function addEmploi(Emploi $emploi): self
+    {
+        if (!$this->emplois->contains($emploi)) {
+            $this->emplois->add($emploi);
+            $emploi->setAppartenir($this);
+        }
+
+        return $this;
+    }
+
+    public function removeEmploi(Emploi $emploi): self
+    {
+        if ($this->emplois->removeElement($emploi)) {
+            // set the owning side to null (unless already changed)
+            if ($emploi->getAppartenir() === $this) {
+                $emploi->setAppartenir(null);
+            }
+        }
 
         return $this;
     }

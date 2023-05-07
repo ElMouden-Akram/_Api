@@ -27,6 +27,10 @@ class OffreEmploi
     #[ORM\Column(type: Types::TEXT)]
     private ?string $description = null;
 
+    #[ORM\ManyToOne(inversedBy: 'offreEmplois')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Emploi $appartenir = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -76,6 +80,18 @@ class OffreEmploi
     public function setDescription(string $description): self
     {
         $this->description = $description;
+
+        return $this;
+    }
+
+    public function getAppartenir(): ?Emploi
+    {
+        return $this->appartenir;
+    }
+
+    public function setAppartenir(?Emploi $appartenir): self
+    {
+        $this->appartenir = $appartenir;
 
         return $this;
     }
